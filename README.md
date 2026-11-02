@@ -162,17 +162,20 @@ recorder sends chunks every few seconds, and a session may still be "open".
    <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/replay.png" alt="Replay" width="900"></p>
 
 4. Pause where you clicked **Register**. In the event table, open the HTTP
-   request to `/api/registrations` and choose **Open trace**. You get
+   request to `/api/registrations` and choose **Open trace**. 
+   On an HTTP request, **Open trace** opens the backend trace it started.
+   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
+
+5. You see
    one trace across three services: the browser's request
    (`registration-website-<lang>`), then the frontend (`registration-web-<lang>`),
    then `registration-api-<lang>` with `validate-registration`, `save-registration`
    and `send-confirmation-email`.
-
-   If the trace shows only the browser span, or the page says
+   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-06.png" alt="Websites 06" width="900"></p>
+   **Note:** If the trace shows only the browser span or the page says
    *No traces received yet*, see
    [Only logs arrive, traces don't](#only-logs-arrive-traces-dont). If you can't
    find the button, see [Finding Open trace](#finding-open-trace).
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-06.png" alt="Websites 06" width="900"></p>
 
 That is the title of the workshop: from one click to one trace.
 
@@ -396,7 +399,4 @@ them as errors with a stack trace, and the failing span is
 In the session's event table, click the `POST /api/registrations` row, then
 click **Open trace** in the side panel's **Request Context** section. This is
 the step in [Exercise 1](#exercise-1--one-click-one-trace).
-
----
-
-> Workshop: **From One Click to One Trace: Hands-On Session Replay** — Dash0.
+<p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
