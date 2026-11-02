@@ -142,9 +142,12 @@ recorder sends chunks every few seconds, and a session may still be "open".
 
 1. Register once with made-up data and a normal email.
 2. In Dash0, find your session. The quickest way: filter sessions by
-   `user.id` = the **registration id** on your screen. The page calls
+   `user.id` = the **registration id** on your screen. 
+   <p><img src="images/general/user-id-01.png" alt="User ID 01" width="900"></p>
+   The page calls
    `identify()` with that id after a successful registration. It deliberately
    does not use the email address.
+   <p><img src="images/general/user-id-02.png" alt="User ID 02" width="900"></p>
 3. Watch the replay. Notice that every field you typed into shows `****`:
    session replay masks all input values by default, in the browser, before
    anything is sent.
