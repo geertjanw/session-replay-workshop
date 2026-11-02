@@ -400,3 +400,7 @@ In the session's event table, click the `POST /api/registrations` row, then
 click **Open trace** in the side panel's **Request Context** section. This is
 the step in [Exercise 1](#exercise-1--one-click-one-trace).
 <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
+
+---
+
+> Workshop: **From One Click to One Trace: Hands-On Session Replay** — Dash0.
