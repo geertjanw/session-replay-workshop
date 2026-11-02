@@ -131,7 +131,7 @@ From any web event, **View full session** opens the replay at that moment.
 
 <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-04.png" alt="Websites 04" width="900"></p>
 
-On an HTTP request, **View full trace** opens the backend trace it started.
+On an HTTP request, **Open trace** opens the backend trace it started.
 
 <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
 
@@ -154,9 +154,10 @@ recorder sends chunks every few seconds, and a session may still be "open".
    <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/replay.png" alt="Replay" width="900"></p>
 
 4. Pause where you clicked **Register**. In the event table, open the HTTP
-   request to `/api/registrations` and choose **View full trace**. You get
-   one trace: the browser's request, `registration-web-<lang>`, then
-   `registration-api-<lang>` with `validate-registration`, `save-registration`
+   request to `/api/registrations` and choose **Open trace**. You get
+   one trace across three services: the browser's request
+   (`registration-website-<lang>`), then the frontend (`registration-web-<lang>`),
+   then `registration-api-<lang>` with `validate-registration`, `save-registration`
    and `send-confirmation-email`.
 
 That is the title of the workshop: from one click to one trace.
@@ -288,6 +289,62 @@ sends telemetry for.
 - **Privacy leak:** `<p class="dash0-mask">Thanks, …</p>`.
 
 </details>
+
+## 5. Troubleshooting
+
+**Logs arrive but the trace is missing.** Logs and traces use the same
+endpoint and token, so this points at the trace exporter. Check for an
+inherited setting first:
+
+```sh
+env | grep -E '^OTEL_'
+```
+
+`OTEL_TRACES_EXPORTER=none` turns off traces in the OpenTelemetry Java agent
+(and other SDKs) while logs and metrics keep working. It often comes from a
+shell profile or a tool's environment. Remove it, for example with
+`unset OTEL_TRACES_EXPORTER`, then restart the services from that same
+terminal. Also clear `OTEL_RESOURCE_ATTRIBUTES` if a tool set it, since it
+adds unrelated resource attributes to every signal.
+
+**Dash0 shows no traces at all.** Check the three things that must match
+between your services and the Dash0 page:
+
+- **Org:** the token in `.env` must belong to the org you have open.
+- **Dataset:** `DASH0_DATASET` (default `default`) must be the dataset selected
+  in the UI. Names are case-sensitive.
+- **Time range:** set the traces explorer to the last hour and clear its filters.
+
+To check ingestion on its own, send one test span. It creates test data in
+your dataset, so ignore it afterwards:
+
+```sh
+set -a; source .env; set +a
+curl -s -o /dev/null -w "HTTP %{http_code}\n" -X POST "$OTEL_EXPORTER_OTLP_ENDPOINT/v1/traces" \
+  -H "Authorization: Bearer $DASH0_AUTH_TOKEN" -H "Dash0-Dataset: $DASH0_DATASET" \
+  -H "Content-Type: application/json" \
+  -d '{"resourceSpans":[{"resource":{"attributes":[{"key":"service.name","value":{"stringValue":"registration-diag"}}]},"scopeSpans":[{"spans":[{"traceId":"0af7651916cd43dd8448eb211c80319c","spanId":"1111111111111111","name":"diag","kind":1,"startTimeUnixNano":"1700000000000000000","endTimeUnixNano":"1700000000005000000"}]}]}]}'
+```
+
+`HTTP 200` plus the span in the traces explorer means Dash0 accepts traces
+for your dataset, so the problem is in the service's exporter. A `401` or
+`403` means the token is wrong or belongs to another org.
+
+**Finding a trace from a log.** The log record's `traceId` is base64. Dash0
+shows the same ID in hex, so convert it before you search:
+
+```sh
+echo '<traceId from the log>' | base64 -D | xxd -p
+```
+
+**The red screen and the ERROR log are expected.** The `+fail` address and
+the random provider outage are deliberate (see Exercise 2). The backend logs
+them as errors with a stack trace, and the failing span is
+`send-confirmation-email`. The trace still exists.
+
+**Where the trace button is.** In the session's event table, click the
+`POST /api/registrations` row, then click **Open trace** in the side panel's
+**Request Context** section.
 
 ---
 

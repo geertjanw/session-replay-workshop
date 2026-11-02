@@ -118,7 +118,7 @@ You now have three services in Dash0:
   the `registration.duration` metric and correlated error logs.
 
 Open your session, open the `/api/registrations` request from its event table
-and choose **View full trace**: one trace from the browser through both
+and choose **Open trace**: one trace from the browser through both
 services.
 
 Then work through the [exercises](../../README.md#3-the-exercises). The page's
