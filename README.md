@@ -301,11 +301,32 @@ env | grep -E '^OTEL_'
 ```
 
 `OTEL_TRACES_EXPORTER=none` turns off traces in the OpenTelemetry Java agent
-(and other SDKs) while logs and metrics keep working. It often comes from a
-shell profile or a tool's environment. Remove it, for example with
-`unset OTEL_TRACES_EXPORTER`, then restart the services from that same
-terminal. Also clear `OTEL_RESOURCE_ATTRIBUTES` if a tool set it, since it
-adds unrelated resource attributes to every signal.
+(and other SDKs) while logs and metrics keep working. Unsetting it in your
+terminal is not enough: a tool that sets it in its own environment injects it
+again each time a service starts. In Claude Code, for example, it comes from
+the `env` block of `~/.claude/settings.json`. Either start the services with
+an explicit override:
+
+```sh
+OTEL_TRACES_EXPORTER=otlp ./run.sh
+```
+
+or remove the variable from the tool's settings. Check the running process,
+not just your terminal:
+
+```sh
+ps eww -p <java-pid> | tr ' ' '\n' | grep '^OTEL_TRACES_EXPORTER='
+```
+
+Also clear `OTEL_RESOURCE_ATTRIBUTES` if a tool set it, since it adds
+unrelated resource attributes to every signal.
+
+**Logs stop with `UnknownHostException`.** The agent logs
+`Failed to export … UnknownHostException: ingress.<region>.dash0.com` when
+DNS fails. A flaky network or DNS server can cause this for a few seconds.
+Check that the host resolves (`dig +short ingress.<region>.dash0.com`), then
+retry. Logs that failed during the outage are not re-sent. Registrations made
+during the outage won't have traces either.
 
 **Dash0 shows no traces at all.** Check the three things that must match
 between your services and the Dash0 page:
