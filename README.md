@@ -89,7 +89,9 @@ browser.
      as `auth_REPLACE_ME`, the frontend falls back to `DASH0_AUTH_TOKEN` and
      prints a warning. That works on your own laptop; never do it on a public site.
 
-All four apps read this same root `.env`.
+All four apps read this same root `.env`. If the org or dataset doesn't match
+the one you're viewing in Dash0, nothing shows up. See
+[No traces in Dash0 at all](#no-traces-in-dash0-at-all).
 
 ## 2. Run an app
 
@@ -109,6 +111,12 @@ requests, and then no replay arrives.
 filter on `v1/`, and click around the form. Every few seconds you should see a
 request to your Dash0 endpoint (`/v1/logs` carries the replay, `/v1/traces` the
 requests). A `401` means the browser token is wrong.
+
+If the replay arrives but no backend trace does, a tool may be setting
+`OTEL_TRACES_EXPORTER` in your shell. See
+[Only logs arrive, traces don't](#only-logs-arrive-traces-dont). If the
+terminal prints `Failed to export`, see
+[Logs stop with `UnknownHostException`](#logs-stop-with-unknownhostexception).
 
 **Use made-up data.** The session is recorded. Type `Ada Lovelace` and
 `ada@example.com`, not your own name.
@@ -160,6 +168,12 @@ recorder sends chunks every few seconds, and a session may still be "open".
    then `registration-api-<lang>` with `validate-registration`, `save-registration`
    and `send-confirmation-email`.
 
+   If the trace shows only the browser span, or the page says
+   *No traces received yet*, see
+   [Only logs arrive, traces don't](#only-logs-arrive-traces-dont). If you can't
+   find the button, see [Finding Open trace](#finding-open-trace).
+   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-06.png" alt="Websites 06" width="900"></p>
+
 That is the title of the workshop: from one click to one trace.
 
 ### Exercise 2 — A backend failure, seen from the screen
@@ -171,7 +185,9 @@ That is the title of the workshop: from one click to one trace.
    `send-confirmation-email`, with `error.type = invalid_recipient` (HTTP `422`).
 4. Register a few more times with a normal email until one fails at random
    (about 15% do). That is `email_provider_unavailable` (HTTP `503`): the same
-   red screen for the visitor, a very different problem for you.
+   red screen for the visitor, a very different problem for you. The ERROR log
+   and stack trace for both failures are expected; see
+   [The red screen and the ERROR log are expected](#the-red-screen-and-the-error-log-are-expected).
 
 You could find these from the backend alone. The replay adds the
 part the trace can't: what the visitor saw, and what they did next.
@@ -292,7 +308,10 @@ sends telemetry for.
 
 ## 5. Troubleshooting
 
-**Logs arrive but the trace is missing.** Logs and traces use the same
+### Only logs arrive, traces don't
+
+Symptom: the backend's logs reach Dash0, but the trace page shows only the
+browser span, or *No traces received yet*. Logs and traces use the same
 endpoint and token, so this points at the trace exporter. Check for an
 inherited setting first:
 
@@ -301,14 +320,39 @@ env | grep -E '^OTEL_'
 ```
 
 `OTEL_TRACES_EXPORTER=none` turns off traces in the OpenTelemetry Java agent
-(and other SDKs) while logs and metrics keep working. It often comes from a
-shell profile or a tool's environment. Remove it, for example with
-`unset OTEL_TRACES_EXPORTER`, then restart the services from that same
-terminal. Also clear `OTEL_RESOURCE_ATTRIBUTES` if a tool set it, since it
-adds unrelated resource attributes to every signal.
+(and other SDKs) while logs and metrics keep working. Unsetting it in your
+terminal is not enough: a tool that sets it in its own environment injects it
+again each time a service starts. In Claude Code, for example, it comes from
+the `env` block of `~/.claude/settings.json`. Either start the services with
+an explicit override:
 
-**Dash0 shows no traces at all.** Check the three things that must match
-between your services and the Dash0 page:
+```sh
+OTEL_TRACES_EXPORTER=otlp ./run.sh
+```
+
+or remove the variable from the tool's settings. Check the running process,
+not just your terminal:
+
+```sh
+ps eww -p <java-pid> | tr ' ' '\n' | grep '^OTEL_TRACES_EXPORTER='
+```
+
+Also clear `OTEL_RESOURCE_ATTRIBUTES` if a tool set it, since it adds
+unrelated resource attributes to every signal.
+
+### Logs stop with `UnknownHostException`
+
+Symptom: the backend terminal prints `Failed to export …`. The agent logs
+`Failed to export … UnknownHostException: ingress.<region>.dash0.com` when
+DNS fails. A flaky network or DNS server can cause this for a few seconds.
+Check that the host resolves (`dig +short ingress.<region>.dash0.com`), then
+retry. Logs that failed during the outage are not re-sent. Registrations made
+during the outage won't have traces either.
+
+### No traces in Dash0 at all
+
+Symptom: the traces explorer is empty, even for the test span below. Check
+the three things that must match between your services and the Dash0 page:
 
 - **Org:** the token in `.env` must belong to the org you have open.
 - **Dataset:** `DASH0_DATASET` (default `default`) must be the dataset selected
@@ -330,21 +374,28 @@ curl -s -o /dev/null -w "HTTP %{http_code}\n" -X POST "$OTEL_EXPORTER_OTLP_ENDPO
 for your dataset, so the problem is in the service's exporter. A `401` or
 `403` means the token is wrong or belongs to another org.
 
-**Finding a trace from a log.** The log record's `traceId` is base64. Dash0
+### Finding a trace from a log
+
+Use this when a log record has a `traceId` and you want its trace. The
+record's `traceId` is base64. Dash0
 shows the same ID in hex, so convert it before you search:
 
 ```sh
 echo '<traceId from the log>' | base64 -D | xxd -p
 ```
 
-**The red screen and the ERROR log are expected.** The `+fail` address and
+### The red screen and the ERROR log are expected
+
+The `+fail` address and
 the random provider outage are deliberate (see Exercise 2). The backend logs
 them as errors with a stack trace, and the failing span is
 `send-confirmation-email`. The trace still exists.
 
-**Where the trace button is.** In the session's event table, click the
-`POST /api/registrations` row, then click **Open trace** in the side panel's
-**Request Context** section.
+### Finding Open trace
+
+In the session's event table, click the `POST /api/registrations` row, then
+click **Open trace** in the side panel's **Request Context** section. This is
+the step in [Exercise 1](#exercise-1--one-click-one-trace).
 
 ---
 
