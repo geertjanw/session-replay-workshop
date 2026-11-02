@@ -172,6 +172,7 @@ recorder sends chunks every few seconds, and a session may still be "open".
    then `registration-api-<lang>` with `validate-registration`, `save-registration`
    and `send-confirmation-email`.
    <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-06.png" alt="Websites 06" width="900"></p>
+
    **Note:** If the trace shows only the browser span or the page says
    *No traces received yet*, see
    [Only logs arrive, traces don't](#only-logs-arrive-traces-dont). If you can't
