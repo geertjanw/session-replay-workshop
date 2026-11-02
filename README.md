@@ -60,21 +60,21 @@ browser.
 
 2. **Services token.** Go to **Settings → Auth Tokens** and create a token, or
    use the **Auto-generated auth token**. It looks like `auth_...`.
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/auth-token-v2.png" alt="Dash0 Auth Tokens settings" width="900"></p>
+   <p><img src="images/general/auth-token-v2.png" alt="Dash0 Auth Tokens settings" width="900"></p>
 
 3. **Browser token.** Create a second token in **Settings → Auth Tokens**, and
    give it permission to **ingest** data into your dataset and nothing else.
    This token ends up in the HTML of the page, so anyone who opens the page
    can read it. That is normal for browser telemetry, and it is why it must
    not be the token your services use.
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/web-token-v2.png" alt="Web Token" width="900"></p>
+   <p><img src="images/general/web-token-v2.png" alt="Web Token" width="900"></p>
 
 4. **Endpoint.** Go to **Settings → Endpoints → OTLP via HTTP** for your
    region-specific ingress URL (e.g. `https://ingress.eu-west-1.aws.dash0.com`).
    Use the **HTTP** endpoint, not gRPC: the services export with
    `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf`, so a URL with a port must use
    `:4318`, never `:4317`. The browser sends to the same URL.
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/endpoint-v2a.png" alt="Dash0 OTLP endpoint settings" width="900"></p>
+   <p><img src="images/general/endpoint-v2a.png" alt="Dash0 OTLP endpoint settings" width="900"></p>
 
 5. Copy the template and fill it in:
 
@@ -127,21 +127,21 @@ Replays open in the **Websites** explorer.
 
 The **Sessions** list marks which sessions have a replay.
 
-<p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-01.png" alt="Websites 01" width="900"></p>
+<p><img src="images/general/websites-01.png" alt="Websites 01" width="900"></p>
 
-<p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-02.png" alt="Websites 02" width="900"></p>
+<p><img src="images/general/websites-02.png" alt="Websites 02" width="900"></p>
 
 Opening one shows the replay above the session's event table. 
 
-<p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-03.png" alt="Websites 03" width="900"></p>
+<p><img src="images/general/websites-03.png" alt="Websites 03" width="900"></p>
 
 From any web event, **View full session** opens the replay at that moment. 
 
-<p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-04.png" alt="Websites 04" width="900"></p>
+<p><img src="images/general/websites-04.png" alt="Websites 04" width="900"></p>
 
 On an HTTP request, **Open trace** opens the backend trace it started.
 
-<p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
+<p><img src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
 
 A replay can take up to a minute to arrive after you stop clicking: the
 recorder sends chunks every few seconds, and a session may still be "open".
@@ -151,27 +151,27 @@ recorder sends chunks every few seconds, and a session may still be "open".
 1. Register once with made-up data and a normal email.
 2. In Dash0, find your session. The quickest way: filter sessions by
    `user.id` = the **registration id** on your screen. 
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/user-id-01.png" alt="User ID 01" width="500"></p>
+   <p><img src="images/general/user-id-01.png" alt="User ID 01" width="500"></p>
    The page calls
    `identify()` with that id after a successful registration. It deliberately
    does not use the email address.
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/user-id-02.png" alt="User ID 02" width="900"></p>
+   <p><img src="images/general/user-id-02.png" alt="User ID 02" width="900"></p>
 3. Watch the replay. Notice that every field you typed into shows `****`:
    session replay masks all input values by default, in the browser, before
    anything is sent.
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/replay.png" alt="Replay" width="900"></p>
+   <p><img src="images/general/replay.png" alt="Replay" width="900"></p>
 
 4. Pause where you clicked **Register**. In the event table, open the HTTP
    request to `/api/registrations` and choose **Open trace**. 
    On an HTTP request, **Open trace** opens the backend trace it started.
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
+   <p><img src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
 
 5. You see
    one trace across three services: the browser's request
    (`registration-website-<lang>`), then the frontend (`registration-web-<lang>`),
    then `registration-api-<lang>` with `validate-registration`, `save-registration`
    and `send-confirmation-email`.
-   <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-06.png" alt="Websites 06" width="900"></p>
+   <p><img src="images/general/websites-06.png" alt="Websites 06" width="900"></p>
 
    **Note:** If the trace shows only the browser span or the page says
    *No traces received yet*, see
@@ -400,7 +400,7 @@ them as errors with a stack trace, and the failing span is
 In the session's event table, click the `POST /api/registrations` row, then
 click **Open trace** in the side panel's **Request Context** section. This is
 the step in [Exercise 1](#exercise-1--one-click-one-trace).
-<p><img style="border:1px solid #d0d7de;border-radius:6px;" src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
+<p><img src="images/general/websites-05.png" alt="Websites 05" width="900"></p>
 
 ---
 
