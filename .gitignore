@@ -1,0 +1,28 @@
+# Secrets — never commit the filled-in credentials
+.env
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Go
+# (binaries built into service dirs)
+/apps/go/backend/backend
+/apps/go/frontend/frontend
+/apps/go/backend/registration-api-go
+/apps/go/frontend/registration-web-go
+
+# Java
+target/
+apps/java/opentelemetry-javaagent.jar
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
