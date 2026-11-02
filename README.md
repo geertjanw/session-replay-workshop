@@ -67,6 +67,7 @@ browser.
    This token ends up in the HTML of the page, so anyone who opens the page
    can read it. That is normal for browser telemetry, and it is why it must
    not be the token your services use.
+   <p><img src="images/general/web-token.png" alt="Web Token" width="900"></p>
 
 4. **Endpoint.** Go to **Settings → Endpoints → OTLP via HTTP** for your
    region-specific ingress URL (e.g. `https://ingress.eu-west-1.aws.dash0.com`).
@@ -133,6 +134,8 @@ recorder sends chunks every few seconds, and a session may still be "open".
 3. Watch the replay. Notice that every field you typed into shows `****`:
    session replay masks all input values by default, in the browser, before
    anything is sent.
+   <p><img src="images/general/replay.png" alt="Replay" width="900"></p>
+
 4. Pause where you clicked **Register**. In the event table, open the HTTP
    request to `/api/registrations` and choose **View full trace**. You get
    one trace: the browser's request, `registration-web-<lang>`, then
