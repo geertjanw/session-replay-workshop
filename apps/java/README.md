@@ -60,14 +60,14 @@ cp .env.example .env      # run from the repository root
 - **Auth token**: Dash0 app → **Settings → Auth Tokens** → create a token
   (`auth_...`), or use the **Auto-generated auth token** → put it in
   `DASH0_AUTH_TOKEN`.
-  <p><img src="../../images/general/auth-token-v2.png" alt="Dash0 Auth Tokens settings" width="900"></p>
+  <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="../../images/general/auth-token-v2.png" alt="Dash0 Auth Tokens settings" width="900"></p>
 - **OTLP endpoint**: Dash0 app → **Settings → Endpoints → OTLP via HTTP** shows
   your fully-resolved, region-specific ingress URL
   (e.g. `https://ingress.eu-west-1.aws.dash0.com`) → put it in
   `OTEL_EXPORTER_OTLP_ENDPOINT`. Use the **HTTP** endpoint (protocol is
   `http/protobuf`): if it carries a port it must be `:4318`, never `:4317`
   (gRPC → `HTTP 415`); no port is fine (defaults to 443).
-  <p><img src="../../images/general/endpoint-v2a.png" alt="Dash0 OTLP endpoint settings" width="900"></p>
+  <p><img style="border:1px solid #d0d7de;border-radius:6px;" src="../../images/general/endpoint-v2a.png" alt="Dash0 OTLP endpoint settings" width="900"></p>
 - `OTEL_EXPORTER_OTLP_PROTOCOL` stays `http/protobuf`.
 - `DASH0_DATASET` stays `default` (auto-created) unless you use another dataset.
 
