@@ -115,11 +115,25 @@ requests). A `401` means the browser token is wrong.
 
 ## 3. The exercises
 
-Replays open in the **Websites** explorer: the **Sessions** list marks which
-sessions have a replay, and opening one shows the replay above the session's
-event table. From any web event, **View full session** opens the replay at
-that moment. On an HTTP request, **View full trace** opens the backend trace
-it started.
+Replays open in the **Websites** explorer. 
+
+The **Sessions** list marks which sessions have a replay.
+
+<p><img src="images/general/websites-01.png" alt="Websites 01" width="900"></p>
+
+<p><img src="images/general/websites-02.png" alt="Websites 02" width="900"></p>
+
+Opening one shows the replay above the session's event table. 
+
+<p><img src="images/general/websites-02.png" alt="Websites 03" width="900"></p>
+
+From any web event, **View full session** opens the replay at that moment. 
+
+<p><img src="images/general/websites-02.png" alt="Websites 04" width="900"></p>
+
+On an HTTP request, **View full trace** opens the backend trace it started.
+
+<p><img src="images/general/websites-02.png" alt="Websites 05" width="900"></p>
 
 A replay can take up to a minute to arrive after you stop clicking: the
 recorder sends chunks every few seconds, and a session may still be "open".
