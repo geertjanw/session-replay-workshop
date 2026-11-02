@@ -67,7 +67,7 @@ browser.
    This token ends up in the HTML of the page, so anyone who opens the page
    can read it. That is normal for browser telemetry, and it is why it must
    not be the token your services use.
-   <p><img src="images/general/web-token.png" alt="Web Token" width="900"></p>
+   <p><img src="images/general/web-token-v2.png" alt="Web Token" width="900"></p>
 
 4. **Endpoint.** Go to **Settings → Endpoints → OTLP via HTTP** for your
    region-specific ingress URL (e.g. `https://ingress.eu-west-1.aws.dash0.com`).
